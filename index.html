@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Target Bot</title>
+    <script type = "text/javascript">
+        // makes variables global
+        var url;
+        var userID;
+        var password;
+        var delayTimer;
+
+
+        function fn1(){
+            url = document.getElementById("text1").value;
+            userID = document.getElementById("text2").value;
+            password = document.getElementById("text3").value;
+            delayTimer = document.getElementById("text4").value;
+            alert("The program is now running!");
+        }
+
+        var page
+        var puppeteer = require("puppeteer/lib/cjs/puppeteer/node-puppeteer-core");
+        async function givePage(){
+            //headless does not show the action. When it is set to false the action is shown but it is slower
+            const browser = await puppeteer.launch({headless: false});
+            //makes the browser open a new page
+            page = await browser.newPage();
+            return page;
+        }
+        async function addToCart(page){
+            await page.goto(url);
+            await page.waitForSelector("button[class='BaseButton-sc-3v3oog-0 ButtonPrimary-sc-9wgfzx-0 styles__StyledPrimaryButton-sc-1f2lsll-0 eVHdWy JRFKP bebHXQ']");
+            await page.click("button[class='BaseButton-sc-3v3oog-0 ButtonPrimary-sc-9wgfzx-0 styles__StyledPrimaryButton-sc-1f2lsll-0 eVHdWy JRFKP bebHXQ']", elem => elem.click());
+            await page.waitForSelector("button[class='Button-sc-bwu3xu-0 gALAUt']");
+            await page.click("button[class='Button-sc-bwu3xu-0 gALAUt']", elem => elem.click());
+            await page.waitForSelector("button[class='BaseButton-sc-3v3oog-0 ButtonPrimary-sc-9wgfzx-0 gxYtIT hcoLgH h-padding-h-default sticky-checkout-button']");
+            await page.click("button[class='BaseButton-sc-3v3oog-0 ButtonPrimary-sc-9wgfzx-0 gxYtIT hcoLgH h-padding-h-default sticky-checkout-button']", elem => elem.click());
+            await page.waitFor(delayTimer/3);
+        }
+
+
+        //function to log into account
+        async function accountLogin(page){
+            /*Line below is separate from the user selected delay timer. Page will not allow
+                instant user name and password submittal
+                 */
+            await page.waitFor(1500);
+            await page.type("#username", userID);
+            await page.type("#password", password);
+            await page.waitFor(0);
+            await page.waitForSelector("button[class='BaseButton-sc-3v3oog-0 ButtonPrimary-sc-9wgfzx-0 styles__SignInButton-sc-137ce2q-8 kmdQZX JRFKP eGNBea']");
+            await page.click("button[class='BaseButton-sc-3v3oog-0 ButtonPrimary-sc-9wgfzx-0 styles__SignInButton-sc-137ce2q-8 kmdQZX JRFKP eGNBea']", elem => elem.click());
+            await page.waitFor(1500);
+            //await page.click("button[class='BaseButton-sc-3v3oog-0 ButtonSecondary-sc-18j0bd9-0 styles__NotNowButton-sc-1eidujf-13 kmdQZX bNKunA hiqZQf']", elem => elem.click());
+            //await page.waitForSelector("button[class='BaseButton-sc-3v3oog-0 ButtonSecondary-sc-18j0bd9-0 styles__NotNowButton-sc-1eidujf-13 kmdQZX bNKunA hiqZQf']");
+            //await page.waitFor(delayTime/3);
+        }
+        //submits the item
+        async function submit(page){
+            await page.waitForSelector("button[class='BaseButton-sc-3v3oog-0 ButtonPrimary-sc-9wgfzx-0 cLBbtz JRFKP']");
+            await page.waitFor(5000);
+            await page.click("button[class='BaseButton-sc-3v3oog-0 ButtonPrimary-sc-9wgfzx-0 cLBbtz JRFKP']", elem => elem.click());
+        }
+
+        //the backend driver function
+        async function checkout(){
+            const page = await givePage();
+            await addToCart(page);
+            await accountLogin(page);
+            await submit();
+        }
+    </script>
+</head>
+
+<!-- ^^^Used to format HTML page. HTML is used in javascript for gui.-->
+<!-- Below is the format for the GUI -->
+<body>
+<h1>Welcome to the Target Bot</h1>
+<h2>Enter your details below and press the execute button when finished</h2>
+<b>Item URL</b>: <input id = "text1">
+<br><br>
+<b>Account Email Address</b>: <input id = "text2">
+<br><br>
+<b>Password</b>: <input type="password" id = "text3">
+<br><br>
+<b>Delay Timer:</b> <input id="text4">
+<br><br>
+
+<button onclick="checkout(), fn1()" id="executeButton">Execute</button>
+</body>
+
+</html>
