@@ -1,0 +1,117 @@
+.bg {
+    position: relative;
+    background-attachment: fixed;
+    background-position: top center;
+    background-color: lightpink;
+}
+.bg::before {
+    content: '';
+    top: 0px;
+    right: 0px;
+    left: 0px;
+    bottom: 0px;
+    position: absolute;
+    background-image: url('target logo.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    opacity: 0.5;
+    vertical-align: bottom;
+
+}
+h1 {
+    position: relative;
+    font-family: Impact;
+    font-size: xxx-large;
+    display: flex;
+    justify-content: center;
+
+}
+h2 {
+    position: relative;
+    font-size: large;
+}
+
+form {
+    text-align: left;
+    margin: auto;
+    display: table;
+}
+.white-box{
+    background: white;
+}
+h3 {
+    position: relative;
+    color: red;
+    font-size: x-small;
+    font-weight: bold;
+}
+label {
+    position: relative;
+    width: 240px;
+    display: inline-block;
+}
+
+
+button:disabled{
+    cursor: not-allowed;
+}
+/* the hashtag can be used to target id in css*/
+#submitButton:hover{
+    background: linear-gradient(90deg, mediumseagreen, lightgreen, green);
+    background-size: 200%;
+}
+#reset:hover {
+    background: linear-gradient(90deg, hotpink, lightpink,red);
+    background-size: 200%;
+}
+#submitButton:before,#reset:before {
+    content: '';
+    position: absolute;
+    background: inherit;
+    top: -5px;
+    right: -5px;
+    bottom: -5px;
+    left: -5px;
+    border-radius: 50px;
+    filter: blur(20px);
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+#submitButton:hover:before,#reset:hover:before {
+    opacity: 1;
+    z-index: -1;
+}
+button:hover,#reset:hover {
+    z-index: 1;
+    animation: glow 10s linear infinite;
+}
+@keyframes glow {
+    100%{
+        background-position: 400%;
+    }
+}
+button,#reset {
+    position: relative;
+    display: inline-block;
+    width: 100px;
+    height: 50px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 50px;
+    place-items: center;
+    margin: 0 35px;
+}
+
+
+form {
+    position: relative;
+    font-weight: bold;
+}
+input:invalid {
+    border: 2px dashed red;
+    background-image: linear-gradient(to right, white, pink);
+}
+
+body {
+    margin: fill;
+}
