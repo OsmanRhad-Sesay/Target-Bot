@@ -1,94 +1,120 @@
+<!-- Below is the HTML code used to format the GUI-->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Target Bot</title>
-    <script type = "text/javascript">
-        // makes variables global
-        var url;
-        var userID;
-        var password;
-        var delayTimer;
-
-
-        function fn1(){
-            url = document.getElementById("text1").value;
-            userID = document.getElementById("text2").value;
-            password = document.getElementById("text3").value;
-            delayTimer = document.getElementById("text4").value;
-            alert("The program is now running!");
-        }
-
-        var page
-        var puppeteer = require("puppeteer/lib/cjs/puppeteer/node-puppeteer-core");
-        async function givePage(){
-            //headless does not show the action. When it is set to false the action is shown but it is slower
-            const browser = await puppeteer.launch({headless: false});
-            //makes the browser open a new page
-            page = await browser.newPage();
-            return page;
-        }
-        async function addToCart(page){
-            await page.goto(url);
-            await page.waitForSelector("button[class='BaseButton-sc-3v3oog-0 ButtonPrimary-sc-9wgfzx-0 styles__StyledPrimaryButton-sc-1f2lsll-0 eVHdWy JRFKP bebHXQ']");
-            await page.click("button[class='BaseButton-sc-3v3oog-0 ButtonPrimary-sc-9wgfzx-0 styles__StyledPrimaryButton-sc-1f2lsll-0 eVHdWy JRFKP bebHXQ']", elem => elem.click());
-            await page.waitForSelector("button[class='Button-sc-bwu3xu-0 gALAUt']");
-            await page.click("button[class='Button-sc-bwu3xu-0 gALAUt']", elem => elem.click());
-            await page.waitForSelector("button[class='BaseButton-sc-3v3oog-0 ButtonPrimary-sc-9wgfzx-0 gxYtIT hcoLgH h-padding-h-default sticky-checkout-button']");
-            await page.click("button[class='BaseButton-sc-3v3oog-0 ButtonPrimary-sc-9wgfzx-0 gxYtIT hcoLgH h-padding-h-default sticky-checkout-button']", elem => elem.click());
-            await page.waitFor(delayTimer/3);
-        }
-
-
-        //function to log into account
-        async function accountLogin(page){
-            /*Line below is separate from the user selected delay timer. Page will not allow
-                instant user name and password submittal
-                 */
-            await page.waitFor(1500);
-            await page.type("#username", userID);
-            await page.type("#password", password);
-            await page.waitFor(0);
-            await page.waitForSelector("button[class='BaseButton-sc-3v3oog-0 ButtonPrimary-sc-9wgfzx-0 styles__SignInButton-sc-137ce2q-8 kmdQZX JRFKP eGNBea']");
-            await page.click("button[class='BaseButton-sc-3v3oog-0 ButtonPrimary-sc-9wgfzx-0 styles__SignInButton-sc-137ce2q-8 kmdQZX JRFKP eGNBea']", elem => elem.click());
-            await page.waitFor(1500);
-            //await page.click("button[class='BaseButton-sc-3v3oog-0 ButtonSecondary-sc-18j0bd9-0 styles__NotNowButton-sc-1eidujf-13 kmdQZX bNKunA hiqZQf']", elem => elem.click());
-            //await page.waitForSelector("button[class='BaseButton-sc-3v3oog-0 ButtonSecondary-sc-18j0bd9-0 styles__NotNowButton-sc-1eidujf-13 kmdQZX bNKunA hiqZQf']");
-            //await page.waitFor(delayTime/3);
-        }
-        //submits the item
-        async function submit(page){
-            await page.waitForSelector("button[class='BaseButton-sc-3v3oog-0 ButtonPrimary-sc-9wgfzx-0 cLBbtz JRFKP']");
-            await page.waitFor(5000);
-            await page.click("button[class='BaseButton-sc-3v3oog-0 ButtonPrimary-sc-9wgfzx-0 cLBbtz JRFKP']", elem => elem.click());
-        }
-
-        //the backend driver function
-        async function checkout(){
-            const page = await givePage();
-            await addToCart(page);
-            await accountLogin(page);
-            await submit();
-        }
-    </script>
+    <!--External CSS file-->
+    <link rel="stylesheet" type="text/css" rel="noopener" href="checkmystyle.css">
 </head>
 
-<!-- ^^^Used to format HTML page. HTML is used in javascript for gui.-->
-<!-- Below is the format for the GUI -->
-<body>
-<h1>Welcome to the Target Bot</h1>
-<h2>Enter your details below and press the execute button when finished</h2>
-<b>Item URL</b>: <input id = "text1">
-<br><br>
-<b>Account Email Address</b>: <input id = "text2">
-<br><br>
-<b>Password</b>: <input type="password" id = "text3">
-<br><br>
-<b>Delay Timer:</b> <input id="text4">
-<br><br>
+<title>Target Bot</title>
+<div class ="bg">
+    <body>
+<h1>TARGET BOT</h1>
 
-<button onclick="checkout(), fn1()" id="executeButton">Execute</button>
+<!-- <h2>Enter your details below and press the execute button when finished. Press the refresh button to clear the contents of the form.</h2> -->
+<!-- Below is the form used to take user input. The inputs have labels and require a certain format
+     to be fulfilled before the user can execute the program -->
+<form id = "userInfo" action ="/main.js" method ="get">
+    <label for = "emailField">Email Address</label><input type = "email" id ="emailField" required>
+    <br><br>
+    <label for = "userPassword">Password</label><input type = "password" id ="userPassword" required>
+    <input type="checkbox" onclick="myFunction()">Show Password
+    <br><br>
+    <label for = "itemURL">Product URL</label><input type = "url"  id = "itemURL" required> <!-- onblur = "checkTarget(this)"-->
+    <br><br>
+    <label for = "delayTimer">Delay Timer (in ms)</label><input type ="number"  step = "50" value = "0" min = "0" max = "5000" id = "delayTimer">
+    <br><br>
+    <input type = "reset" id = "reset">
+    <button id = "submitButton" onclick="checkout()">Execute</button>
+    <br><br>
+</form>
+<script>
+    function myFunction() {
+        var x = document.getElementById("userPassword");
+        if (x.type === "password") {
+            x.type = "text";
+        } else {
+            x.type = "password";
+        }
+    }
+
+    /*
+    async function checkTarget(url) {
+        let a = url.value;
+        if (!~a.indexOf("https://target.com")) {
+
+        }
+    }
+     */
+
+    //Opens the puppeteer framework
+    const puppeteer = require('puppeteer');
+
+    // function to open web browser
+    async function givePage(){
+
+
+        //headless does not show the action. When it is set to false the action is shown but it is slower
+        const browser = await puppeteer.launch({headless: false});
+        //makes the browser open a new page
+        const page = await browser.newPage();
+        return page;
+
+    }
+    // item url
+    let url = document.getElementById('itemURL').value;
+    //delay timer. This will be optional and from user input
+    const delayTime = document.getElementById('delayTimer').value;
+    //username
+    const userID = document.getElementById('emailField').value;
+    //user password
+    const password = document.getElementById('userPassword').value;
+    //function that interacts with buttons to add the item to cart
+    async function addToCart(page){
+        await page.goto(url);
+        await page.waitForSelector("button[class='BaseButton-sc-3v3oog-0 ButtonPrimary-sc-9wgfzx-0 gxYtIT hcoLgH']");
+        await page.click("button[class='BaseButton-sc-3v3oog-0 ButtonPrimary-sc-9wgfzx-0 gxYtIT hcoLgH']", elem => elem.click());
+        await page.goto("https://www.target.com/cart");
+        await page.waitForSelector("button[class='BaseButton-sc-3v3oog-0 ButtonPrimary-sc-9wgfzx-0 styles__BlockButton-sc-1jfbmm9-2 gxYtIT hcoLgH neIZL");
+        await page.click("button[class='BaseButton-sc-3v3oog-0 ButtonPrimary-sc-9wgfzx-0 styles__BlockButton-sc-1jfbmm9-2 gxYtIT hcoLgH neIZL']", elem => elem.click());
+        // await page.waitFor(delayTime/3);
+    }
+
+
+    //function to log into account
+    async function accountLogin(page){
+        // Line below is separate from the user selected delay timer. Page will not allow instant user name and password submittal
+
+        await page.waitFor(0);
+        await page.type("#username", userID);
+        await page.type("#password", password);
+        await page.waitFor(0);
+        await page.waitForSelector("button[class='BaseButton-sc-3v3oog-0 ButtonPrimary-sc-9wgfzx-0 styles__SignInButton-sc-137ce2q-8 cJfzQv hcoLgH bznrjC']");
+        await page.click("button[class='BaseButton-sc-3v3oog-0 ButtonPrimary-sc-9wgfzx-0 styles__SignInButton-sc-137ce2q-8 cJfzQv hcoLgH bznrjC']", elem => elem.click());
+        await page.waitFor(0);
+        await page.waitForSelector("button[class='BaseButton-sc-3v3oog-0 ButtonPrimary-sc-9wgfzx-0 gxYtIT hcoLgH h-padding-h-default']");
+        await page.click("button[class='BaseButton-sc-3v3oog-0 ButtonPrimary-sc-9wgfzx-0 gxYtIT hcoLgH h-padding-h-default']", elem => elem.click());
+
+        //await page.waitFor(delayTime/3);
+    }
+    //submits the item
+    async function submit(page){
+        await page.waitForSelector("button[class='BaseButton-sc-3v3oog-0 ButtonPrimary-sc-9wgfzx-0 cLBbtz JRFKP']");
+        await page.waitFor(0);
+        await page.click("button[class='BaseButton-sc-3v3oog-0 ButtonPrimary-sc-9wgfzx-0 cLBbtz JRFKP']", elem => elem.click());
+    }
+
+    //the backend driver function
+    async function checkout(){
+        const page = await givePage();
+        await addToCart(page);
+        await accountLogin(page);
+        await submit();
+    }
+</script>
+<h3> Note: This program will only work if you have already saved your billing and shipping information in the account and have successfully ordered with the account in the past. The program will not stop once started. Not responsible for any accidental charges.</h3>
 </body>
-
-</html>
+</div></html>
